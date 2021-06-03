@@ -27,7 +27,7 @@ def resolve():
     if domain in cache:
         return cache[domain]
 
-    mes = message.make_query(name.from_text(domain), getattr(rdatatype, req_type), getattr(rdataclass, req_cl))
+    mes = message.make_query(name.from_text(domain), rdatatype.A, rdataclass.IN)
 
     for root in roots:
         response = recurse(mes, root)
@@ -47,7 +47,7 @@ def recurse(q, serv_ip):
             return response
         elif response.additional:
             for additional in response.additional:
-                if additional.rdtype != getattr(rdatatype, req_type):
+                if additional.rdtype != rdatatype.A:
                     continue
                 for add in additional:
                     new_response = recurse(q, str(add))
@@ -65,8 +65,6 @@ if __name__ == "__main__":
         req = str(request.question[0]).split()
 
         domain = req[0]
-        req_cl = req[1]
-        req_type = req[2]
 
         res = resolve()
 
